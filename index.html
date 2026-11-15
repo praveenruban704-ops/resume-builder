@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Resume Builder</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="toasts"></div>
+
+<!-- ================= AUTH ================= -->
+<section id="authView" class="auth" hidden>
+  <div class="auth-hero">
+    <div class="logo"><i>R</i> AI Resume Builder</div>
+    <h1>Build a job-winning resume in minutes.</h1>
+    <p>Enter your details once. Get a clean, ATS-friendly resume, AI-written content and a compatibility score you can act on.</p>
+    <div class="feat">
+      <div><span class="ico">AI</span><span><b>AI content assistant</b><small>Summaries, rewrites, skill and project suggestions</small></span></div>
+      <div><span class="ico">✓</span><span><b>ATS compatibility checker</b><small>Keyword match against any job description</small></span></div>
+      <div><span class="ico">PDF</span><span><b>Templates and PDF download</b><small>Four professional layouts, live preview</small></span></div>
+    </div>
+  </div>
+  <div class="auth-panel">
+    <div class="auth-box">
+      <div id="authTabsWrap">
+        <h2 id="authTitle">Welcome back</h2>
+        <p class="muted" id="authSub">Log in to manage your resumes.</p>
+        <div class="auth-tabs"><button id="tabLogin" class="on" type="button">Login</button><button id="tabRegister" type="button">Register</button></div>
+      </div>
+      <form id="loginForm">
+        <label class="fld"><span>Email</span><input type="email" id="lEmail" required placeholder="you@example.com" autocomplete="email"></label>
+        <label class="fld"><span>Password</span><input type="password" id="lPass" required placeholder="Your password" autocomplete="current-password"></label>
+        <button class="btn block" type="submit">Log in</button>
+        <button class="link" type="button" id="toForgot">Forgot password?</button>
+      </form>
+      <form id="registerForm" hidden>
+        <label class="fld"><span>Full name</span><input id="rName" required placeholder="Your full name" autocomplete="name"></label>
+        <label class="fld"><span>Email</span><input type="email" id="rEmail" required placeholder="you@example.com" autocomplete="email"></label>
+        <label class="fld"><span>Password (min 6 characters)</span><input type="password" id="rPass" required minlength="6" autocomplete="new-password"></label>
+        <label class="fld"><span>Confirm password</span><input type="password" id="rPass2" required minlength="6" autocomplete="new-password"></label>
+        <button class="btn block" type="submit">Create account</button>
+      </form>
+      <form id="forgotForm" hidden>
+        <p class="muted" id="forgotMsg">Enter your account email and we'll generate a reset code.</p>
+        <label class="fld"><span>Email</span><input type="email" id="fEmail" required></label>
+        <div id="resetStep" hidden style="display:grid;gap:14px">
+          <label class="fld"><span>6-digit reset code</span><input id="fCode" inputmode="numeric" maxlength="6"></label>
+          <label class="fld"><span>New password</span><input type="password" id="fPass" minlength="6"></label>
+        </div>
+        <button class="btn block" type="submit" id="forgotBtn">Send reset code</button>
+        <button class="link" type="button" id="toLogin">← Back to login</button>
+      </form>
+      <p class="muted" style="margin-top:18px;font-size:12.5px">Demo mode: accounts and resumes are stored in this browser's local storage. Connect a backend for real email delivery and cloud sync.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= APP ================= -->
+<div id="appView" hidden>
+  <header class="topbar">
+    <div class="logo"><i>R</i> <span>AI Resume Builder</span></div>
+    <nav>
+      <button id="navDash" class="on">My Resumes</button>
+      <button id="navProfile">Profile</button>
+    </nav>
+    <div class="sp"></div>
+    <span class="avatar" id="navAvatar">U</span>
+    <button class="btn ghost sm" id="logoutBtn">Logout</button>
+  </header>
+
+  <section id="dashView">
+    <div class="container">
+      <div class="page-head">
+        <div><h2>My Resumes</h2><p class="muted">Create, edit and manage multiple resumes.</p></div>
+        <div class="row"><button class="btn ghost" id="sampleBtn">Create with sample data</button><button class="btn" id="newBtn">+ New Resume</button></div>
+      </div>
+      <div id="rList" class="rgrid"></div>
+    </div>
+  </section>
+
+  <section id="builderView" hidden>
+    <div class="builder">
+      <div class="editor">
+        <div class="editor-head">
+          <button class="btn ghost sm" id="backBtn">← All</button>
+          <input id="resumeTitle" aria-label="Resume name" placeholder="Resume name">
+          <span id="saveState">Saved</span>
+        </div>
+        <nav class="tabs" id="tabs"></nav>
+        <div id="tabBody"></div>
+        <div class="editor-foot"><button class="btn ghost sm" id="prevBtn">← Back</button><button class="btn sm" id="nextBtn">Next →</button></div>
+      </div>
+      <div class="preview-pane">
+        <div class="pv-toolbar">
+          <button class="btn ghost sm mob-toggle" id="mobToggle">Edit / Preview</button>
+          <select id="tplSel" aria-label="Template">
+            <option value="modern">Modern Blue</option>
+            <option value="classic">Classic</option>
+            <option value="minimal">Minimal (ATS-safe)</option>
+            <option value="sidebar">Sidebar</option>
+          </select>
+          <div class="swatches" id="swatches"></div>
+          <input type="color" id="accPick" title="Custom accent colour" style="height:26px;width:30px">
+          <span class="muted" id="pageInfo" style="font-size:12.5px"></span>
+          <span style="flex:1"></span>
+          <button class="btn ghost sm" id="quickPdf" title="Direct file download (image-based PDF)">Quick PDF</button>
+          <button class="btn sm" id="dlPdf" title="Opens print dialog - choose 'Save as PDF' for a text-selectable, ATS-friendly PDF">Download PDF</button>
+        </div>
+        <div class="pv-scroll" id="pvScroll"><div id="pvWrap"><div id="pvPage" class="resume-page"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="profileView" hidden>
+    <div class="container" style="max-width:720px">
+      <div class="page-head"><div><h2>Profile</h2><p class="muted">Manage your account.</p></div></div>
+      <div class="card" style="display:grid;gap:14px">
+        <label class="fld"><span>Full name</span><input id="pName"></label>
+        <label class="fld"><span>Email (login)</span><input id="pEmail" disabled></label>
+        <div><button class="btn" id="saveProfile">Save profile</button></div>
+      </div>
+      <div class="card" style="display:grid;gap:14px;margin-top:18px">
+        <h3 class="sec-title">Change password</h3>
+        <div class="grid2">
+          <label class="fld"><span>Current password</span><input type="password" id="cpOld"></label>
+          <label class="fld"><span>New password</span><input type="password" id="cpNew" minlength="6"></label>
+        </div>
+        <div><button class="btn ghost" id="changePass">Update password</button></div>
+      </div>
+      <div class="card" style="display:grid;gap:12px;margin-top:18px">
+        <h3 class="sec-title">Danger zone</h3>
+        <p class="muted">Deleting your account removes all saved resumes from this browser.</p>
+        <div><button class="btn danger" id="delAccount">Delete account</button></div>
+      </div>
+    </div>
+  </section>
+</div>
+<div id="printRoot"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
